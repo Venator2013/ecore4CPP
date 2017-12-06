@@ -109,8 +109,12 @@ virtual public [ClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuper
 			//*********************************
 			// Structural Feature Getter/Setter
 			//*********************************
-			
 			[aClass.generateeGetDel(true)/]
+
+			//*********************************
+			// Clearance
+			//*********************************
+			[aClass.generateClearOperation(true)/]
 			
 		protected:
 			virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;

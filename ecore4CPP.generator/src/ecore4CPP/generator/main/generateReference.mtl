@@ -48,6 +48,23 @@ _[aReference.name/]) [abstractSufix(impl)/];
 [/template]
 
 [template public generateProtectedReferenceDeleter(aReference : EReference) ]
+[if ((aReference.containment) or not(aReference.upperBound=1))]
+[if ((aReference.containment) and not(aReference.upperBound=1))]
+	for(auto element : *m_[aReference.name/])
+	{
+		m_[aReference.name/]->erase(element);
+		element->clear();
+	}
+[elseif (aReference.containment)]
+	if(m_[aReference.name/])
+	{
+		m_[aReference.name/]->clear();
+		m_[aReference.name/].reset();
+	}
+[elseif (not(aReference.upperBound=1))]  
+	m_[aReference.name/]->clear();
+[/if]
+[/if]
 [/template]
 
 [template public generateReferenceCpp(aReference : EReference)]

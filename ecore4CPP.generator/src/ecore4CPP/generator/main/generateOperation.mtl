@@ -15,6 +15,7 @@
 [module generateOperation('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import ecore4CPP::generator::main::generateClass /]
+[import ecore4CPP::generator::main::generateReference/]
 [import ecore4CPP::generator::main::generateType /] 
 [import ecore4CPP::generator::main::helper /]
 
@@ -96,6 +97,20 @@ op = initEOperation([aOperation.packageGetter()/],[aOperation.eType.simpleDataty
 [template public generateAddParemeter(aParameter : EParameter)]
 addEParameter(op ,[aParameter.eType.simpleDatatypeGetter(aParameter.eOperation)/]  , "[aParameter.name/]",0,1, true,true);
 
+[/template]
+
+
+[template public generateClearOperation(aEClass : EClass, impl : Boolean)]
+virtual void clear() [abstractSufix(impl)/];
+
+[/template]
+
+[template public generateClearOperationImpl(aEClass : EClass)]
+void [aEClass.name.toUpperFirst()/]Impl::clear()
+{
+	[aEClass.eReferences->sortedBy(name).generateProtectedReferenceDeleter()/]
+}
+ 
 [/template]
 
 [query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.name).concat('()') endif/]

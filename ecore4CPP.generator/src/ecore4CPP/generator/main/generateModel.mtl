@@ -127,7 +127,12 @@ virtual public [ClassWithNamespace(aClass,sClass)/][/for]
 			//*********************************
 			// Union Getter
 			//*********************************
-			[aClass.generateUnionGetterDeclaretaion(false)/] 
+			[aClass.generateUnionGetterDeclaretaion(false)/]
+
+			//*********************************
+			// Clearance
+			//*********************************
+			[aClass.generateClearOperation(false)/]
 	};
 
 }
