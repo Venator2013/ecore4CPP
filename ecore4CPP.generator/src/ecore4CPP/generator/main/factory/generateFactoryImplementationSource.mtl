@@ -75,7 +75,7 @@ std::shared_ptr<ecore::EObject> [className/]::create(const unsigned int classID,
 		case [anEPackage.name.toUpperFirst()/]Package::[aClass.getStaticAttributeIDName()/]:
 		{
 [if(ref->size()>0)]
-			if (nullptr == container)
+			if (!container)
 			{
 [/if]
 				return std::shared_ptr<[aClass.name/]>(this->create[aClass.name/]());
@@ -200,7 +200,7 @@ element->set[anEClass.getClassifierIDName()/]ID(classID);
 if(auto wp = par_[aReference.name/].lock())
 {
 [else]
-if(nullptr != par_[aReference.name/])
+if(par_[aReference.name/])
 {
 [/if]
 [if(r.upperBound <> 1)]
