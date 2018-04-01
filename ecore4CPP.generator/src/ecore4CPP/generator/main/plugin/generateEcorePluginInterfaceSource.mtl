@@ -27,10 +27,10 @@ std::shared_ptr<MDE4CPPPlugin> [packageName/]::instance;
 
 std::shared_ptr<MDE4CPPPlugin> [packageName/]::eInstance()
 {
-	if(instance==nullptr)
+	if(!instance)
 	{
 		//create a new Singelton Instance
-		instance.reset(new [packageName/]Impl());
+		instance=std::make_shared<[packageName/]Impl>();
 	}
 	return instance;
 }

@@ -35,20 +35,10 @@
 #include <list>
 #include <memory>
 #include <string>
-
-[if (aClass.eAttributes.eType->select(requiresAny())->size() > 0)]
-#include "boost/any.hpp"
-[/if]
+#include <any>
 
 // forward declarations
 [generateAbstractDataTypesForwardDeclaration()/]
-
-[if (aClass.eAttributes.eType->select(requiresAny())->size() = 0 and aClass.eOperations.eParameters.eType->select(requiresAny())->size() > 0)]
-namespace boost
-{
-	class any;
-}
-[/if]
 
 //*********************************
 // generated Includes
