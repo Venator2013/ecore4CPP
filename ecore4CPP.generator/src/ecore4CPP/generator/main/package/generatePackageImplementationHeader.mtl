@@ -48,7 +48,7 @@ namespace ecore
 
 namespace [anEPackage.name/]
 {
-	class [anEPackage.name.toUpperFirst().concat('PackageImpl')/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/]
+	class [anEPackage.name.toUpperFirst().concat('PackageImpl')/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/], std::enable_shared_from_this<[anEPackage.name.toUpperFirst().concat('PackageImpl')/]> 
 	{
 		private:    
 			[anEPackage.name.toUpperFirst().concat('PackageImpl')/]([anEPackage.name.toUpperFirst().concat('PackageImpl')/] const&) = delete;
@@ -82,11 +82,11 @@ namespace [anEPackage.name/]
 			friend class [anEPackage.name.concat('Package').toUpperFirst()/];
 
 			static bool isInited;
-			static [anEPackage.name.concat('Package').toUpperFirst()/]* create();
+			static std::shared_ptr<[anEPackage.name.concat('Package').toUpperFirst()/]> create();
 			bool isInitialized = false;
  			bool isCreated = false;
 
-			virtual void init(std::shared_ptr<ecore::EPackage> package);
+			virtual void init();
 
 		public:
 			void createPackageContents(std::shared_ptr<ecore::EPackage> package);

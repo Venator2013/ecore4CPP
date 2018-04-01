@@ -57,24 +57,25 @@ bool [packageName/]::isInited = false;
 {
 }
 
-[anEPackage.name.concat('Package').toUpperFirst()/]* [packageName/]::create()
-{
+std::shared_ptr<[anEPackage.name.concat('Package').toUpperFirst()/]> [packageName/]::create()
+{	 
 	if (isInited)
 	{
-		return [anEPackage.name.concat('Package').toUpperFirst()/]::eInstance().get();
+		return [anEPackage.name.concat('Package').toUpperFirst()/]::eInstance();
 	}
 	isInited = true;
-	 
+
     // Obtain or create package and create package meta-data objects
-    [packageName/] * metaModelPackage = new [packageName/]();
+    auto metaModelPackage = std::shared_ptr<[packageName/]>(new [packageName/]());
+	metaModelPackage->init();
     return metaModelPackage;
 }
 
-void [packageName/]::init(std::shared_ptr<ecore::EPackage> package)
+void [packageName/]::init()
 {
     // Initialize created meta-data
-	createPackageContents(package);
-	setThisEPackagePtr(package);
+	createPackageContents(shared_from_this());
+	setThisEPackagePtr(shared_from_this());
     initializePackageContents();   
 }
 

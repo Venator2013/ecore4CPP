@@ -48,11 +48,11 @@ namespace [anEPackage.name/]
 
 		public:
 			virtual ~[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
-			virtual std::shared_ptr<ecore::EObject> create(std::string _className,  std::shared_ptr<ecore::EObject> container, const unsigned int referenceID = -1) const;
+			virtual std::shared_ptr<ecore::EObject> create(const std::string& _className,  std::shared_ptr<ecore::EObject> container, const unsigned int referenceID = -1) const;
 			virtual std::shared_ptr<ecore::EObject> create(const unsigned int classID,  std::shared_ptr<ecore::EObject> container = nullptr, const unsigned int referenceID = -1) const;
 			virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]> _class) const;
 			virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]> _class, std::shared_ptr<EObject> _container) const;
-			virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(std::string _className) const;
+			virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::string& _className) const;
 
 			//Creator functions
 			[anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]
@@ -61,7 +61,7 @@ namespace [anEPackage.name/]
 			virtual std::shared_ptr<[anEPackage.name.toUpperFirst()/]Package> get[anEPackage.name.toUpperFirst()/]Package() const;
 
 		private:
-			static [anEPackage.name.toUpperFirst().concat('Factory')/]* create();
+			static std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Factory')/]> create();
             std::map<std::string,unsigned int> m_idMap;
 	};
 }
