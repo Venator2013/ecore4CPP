@@ -53,7 +53,7 @@
 [/template]
 
 [template public generateAttributeInit(anEAttribute : EAttribute) ? (not(anEAttribute.upperBound = 1))]
-m_[anEAttribute.name/].reset(new Bag<[anEAttribute.eGenericType.generateCppType()/]>());
+m_[anEAttribute.name/] = std::make_shared<Bag<[anEAttribute.eGenericType.generateCppType()/]>>();
 [/template]
 
 [template public generateAttributeGetterDecleration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter())]
