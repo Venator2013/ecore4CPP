@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -71,12 +72,7 @@ public class AcceleoGenerateEcoreGeneratorAction extends ActionDelegate implemen
 							IFile model = (IFile)filesIt.next();
 							URI modelURI = URI.createPlatformResourceURI(model.getFullPath().toString(), true);
 							try {
-								File target = model.getRawLocation().toFile();
-								target = target.getParentFile();
-								if (target.getParentFile().exists())
-								{
-									target = target.getParentFile();
-								}
+								File target =  model.getProject().getLocation().toFile();
 								GenerateAll generator = new GenerateAll(modelURI, new File(target.getAbsoluteFile() + File.separator + "src_gen"), getArguments());
 								generator.doGenerate(monitor);
 							} catch (IOException e) {
