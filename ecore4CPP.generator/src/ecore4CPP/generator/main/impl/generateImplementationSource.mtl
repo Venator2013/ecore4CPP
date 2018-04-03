@@ -86,80 +86,72 @@ using namespace [aClass.ePackage.name/];
 	[/comment]
 	//References
 	[for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\n')]
-	[aReference.generateReferenceInit()/]
-	[/for]
+	[aReference.generateReferenceInit()/][/for]
 
 	//Init references
 	[for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\n')]
-	[aReference.InitReferences()/]
-	[/for]
+	[aReference.InitReferences()/][/for]
 }
 
 [className/]::~[className/]()
 {
 #ifdef SHOW_DELETION
-	std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete [aClass.name.toUpperFirst()/] "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
+	std::cout << "-------------------------------------------------------------------------------------------------" << std::endl;
+	std::cout << "delete [aClass.name.toUpperFirst()/] "<< this << std::endl;
+ 	std::cout << "------------------------------------------------------------------------ " << std::endl;
 #endif
 }
-
 
 [let ref:OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
 //Additional constructor for the containments back reference
 [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
-	[if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
-			[className/]::[className/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id)
-			:[className/]()
-			{
-				switch(reference_id)
-				{	
-				[for(multipleRef : EReference | ref->select(eType.name = aReference.eType.name)->sortedBy(name))]
-				case [aClass.ePackage.name.toUpperFirst()/]Package::[multipleRef.getStaticAttributeIDName()/]:
-					 m_[multipleRef.name/] = par_[aReference.eType.name/];
-					 return;
-				[/for]
-				default:
-				std::cerr << __PRETTY_FUNCTION__ <<" Reference not found in class with the given ID" << std::endl;
-				}
-			   
-			}
-	[/if]
-	[else]
-			[className/]::[className/]([aReference.generateReferenceType(true)/] par_[aReference.name/])
-			:[className/]()
-			{
-			    m_[aReference.name/] = par_[aReference.name/];
-			}
-	[/if]
-
-
-
-
+[if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+[className/]::[className/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id)
+:[className/]()
+{
+	switch(reference_id)
+	{	
+	[for(multipleRef : EReference | ref->select(eType.name = aReference.eType.name)->sortedBy(name))]
+		case [aClass.ePackage.name.toUpperFirst()/]Package::[multipleRef.getStaticAttributeIDName()/]:
+			m_[multipleRef.name/] = par_[aReference.eType.name/];
+			return;
+	[/for]
+		default:
+			std::cerr << __PRETTY_FUNCTION__ <<" Reference not found in class with the given ID" << std::endl;
+	}		   
+}
+[/if]
+[else]
+[className/]::[className/]([aReference.generateReferenceType(true)/] par_[aReference.name/])
+:[className/]()
+{
+	m_[aReference.name/] = par_[aReference.name/];
+}
+[/if]
 [/for]
 [/let]
-
 
 [comment]Don't forget to call the class contructor before initializing the unions and subsets![/comment]
 [className/]::[className/](const [className/] & obj):[className/]()
 {
 	//create copy of all Attributes
 	#ifdef SHOW_COPIES
-	std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\ncopy [aClass.name.toUpperFirst()/] "<< this << "\r\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " << std::endl;
+	std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<< std::endl;
+	std::cout << "copy [aClass.name.toUpperFirst()/] "<< this << std::endl 
+	std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
 	#endif
 	[for (att : EAttribute | aClass.eAllAttributes->asOrderedSet()->sortedBy(name))]
 	m_[att.name/] = obj.[att.GetterName()/]();
 	[/for]
 
 	//copy references with no containment (soft copy)
-	
 	[for (ref : EReference | aClass.eAllReferences->select(aRef: EReference | aRef.isBackReference() or (aRef.containment = false and not aRef.hasSubset()))->asOrderedSet()->sortedBy(name))]
 	[if (ref.hasSetter() or ref.upperBound = 1)]
 	m_[ref.name/]  = obj.[ref.GetterName()/]();
 	[else]
-	[ref.generateReferenceType()/] _[ref.name/] = obj.[ref.GetterName()/]();
-	m_[ref.name/].reset(new [ref.generateReferenceType(false)/](*(obj.[ref.GetterName()/]().get())));
+	m_[ref.name/] = std::make_shared<[ref.generateReferenceType(false)/]>(*(obj.[ref.GetterName()/]()));
 	[/if]
-
 	[/for]
 
 	[comment]References must be copied in this order:
@@ -171,7 +163,7 @@ using namespace [aClass.ePackage.name/];
 
 	[for (ref : EReference | aClass.eAllReferences->select(eRef: EReference|(eRef.containment = true or eRef.hasSubset()) and (not eRef.isUnion()) and (not eRef.isBackReference()))->asOrderedSet()->sortedBy(name))]
 	[if (ref.hasSetter() or ref.upperBound = 1)]
-	if(obj.[ref.GetterName()/]()!=nullptr)
+	if(obj.[ref.GetterName()/]())
 	{
 		[if(ref.upperBound=1)]
 		m_[ref.name/] = std::dynamic_pointer_cast<[ref.eType.generateType()/]>(obj.[ref.GetterName()/]()->copy());
@@ -180,8 +172,7 @@ using namespace [aClass.ePackage.name/];
 		[/if]
 	}
 	[else]
-	std::shared_ptr<Bag<[ref.eType.generateType()/]>> _[ref.name/]List = obj.[ref.GetterName()/]();
-	for(std::shared_ptr<[ref.eType.generateType()/]> _[ref.name/] : *_[ref.name/]List)
+	for(auto _[ref.name/] : *obj.[ref.GetterName()/]())
 	{
 		this->[ref.GetterName()/]()->add(std::shared_ptr<[ref.eType.generateType()/]>(std::dynamic_pointer_cast<[ref.eType.generateType()/]>(_[ref.name/]->copy())));
 	}
@@ -198,7 +189,7 @@ using namespace [aClass.ePackage.name/];
 
 std::shared_ptr<ecore::EObject>  [className/]::copy() const
 {
-	std::shared_ptr<[className/]> element(new [className/](*this));
+	std::shared_ptr<[className/]> element = std::make_shared<[className/]>(*this);
 	element->[generateGetThisPtrPropertySetterName()/](element);
 	return element;
 }

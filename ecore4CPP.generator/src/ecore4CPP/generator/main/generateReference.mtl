@@ -74,7 +74,6 @@ _[anEReference.name/]) [abstractSufix(impl)/];
 	[else]
 	m_[eReference.name/]= std::make_shared<Bag<[eReference.eGenericType.generateCppType()/]>>();
 [/if]
-
 [/template]
 
 [template public InitReferences(eReference : EReference)? (not(eReference.upperBound=1))]
@@ -91,7 +90,6 @@ _[anEReference.name/]) [abstractSufix(impl)/];
 		std::cout << "Initialising value Subset: " << "m_[eReference.name/] - Subset<[eReference.eGenericType.generateCppType()/], [generateSubsetType(eReference)/] >([generateSubsetElements(eReference)/])" << std::endl;
 	#endif
 [/if]
-
 [/template]
 
 [template public generateReferenceParameter(anEReference : EReference)]
